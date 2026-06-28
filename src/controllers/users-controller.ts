@@ -1,11 +1,13 @@
 // responsavel por lidar com a logica da rota de users
 import { Request, Response } from 'express';
 
+import { prisma } from '@/database/prisma';
 //importando o hash para criptografia
 import { hash } from 'bcrypt';
 
 //importando zod para lidar com os dados
 import { z } from 'zod';
+import { AppError } from '@/utils/AppError';
 
 //Agrupando metodos da rota
 class UsersController {
@@ -23,7 +25,27 @@ class UsersController {
     //gerando criptografia para senha
     const hashedPassword = await hash(password, 8);
 
-    return response.json({ message: 'ok', hashedPassword });
+    //Verifica se ja existe usuario com email cadastrado
+    const userWithSameEmail = await prisma.user.findFirst({ where: { email } }); // verificando o primeiro email que encontrar
+
+    //lancando erro caso o email ja exista
+    if (userWithSameEmail) {
+      throw new AppError('User with same email already exist');
+    }
+
+    //criando usuario no banco de dados
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+
+    //separando a senha e desestruturando o resto dos dados para serWithoutPassword
+    const { password: _, ...userWithoutPassword } = user;
+
+    return response.json(userWithoutPassword);
   }
 }
 
