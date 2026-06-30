@@ -44,7 +44,10 @@ class SessionsController {
       expiresIn,
     });
 
-    return response.json({ message: token });
+    // Passando os dados de um usuario para um objeto so
+    const { password: hashedPassword, ...userWithoutPassword } = user;
+
+    return response.json({ message: token, user: userWithoutPassword });
   }
 }
 
