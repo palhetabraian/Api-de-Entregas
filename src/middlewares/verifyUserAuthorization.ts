@@ -9,7 +9,7 @@ function verifyUserAuthorization(role: string[]) {
       throw new AppError('Unauthorized', 401);
     }
 
-    //verificando se
+    //verificando se o usuario tem permissao de vendedor
     if (!role.includes(request.user.role)) {
       throw new AppError('Unauthorized', 401);
     }
