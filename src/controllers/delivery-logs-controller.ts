@@ -26,6 +26,11 @@ class DeliveryLogsController {
       throw new AppError('delivery not found', 404);
     }
 
+    //verificando se o pedido ja foi entregue
+    if (delivery.status === 'delivered') {
+      throw new AppError('this order has already been delivered');
+    }
+
     //verificando se o status ainda ta processando
     if (delivery.status === 'processing') {
       throw new AppError('change status to shipped', 404);
