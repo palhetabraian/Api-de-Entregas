@@ -5,6 +5,7 @@ import { prisma } from '@/database/prisma';
 import { AppError } from '@/utils/AppError';
 
 class DeliveryLogsController {
+  // metodo para criar logs
   async create(request: Request, response: Response) {
     //validando dados
     const bodySchema = z.object({
@@ -39,6 +40,31 @@ class DeliveryLogsController {
     });
 
     return response.status(201).json();
+  }
+
+  //metodo para listar todos os logs
+  async show(request: Request, response: Response) {
+    //validando dados do parametro
+    const paramsSchema = z.object({
+      delivery_id: z.string().uuid(),
+    });
+
+    //validando se os dados estao vindo no formato esperado pelo zod
+    const { delivery_id } = paramsSchema.parse(request.params);
+
+    //recuperando a entrega no banco de dados
+    const delivery = await prisma.delivery.findUnique({
+      where: { id: delivery_id },
+    });
+
+    //fazendo que o cliente consiga ver somente o pedido dele
+    if (
+      request.user?.role === 'customer' &&
+      request.user.id !== delivery?.userId
+    ) {
+      throw new AppError('the user can only view their deliveries', 401);
+    }
+    return response.json(delivery);
   }
 }
 
