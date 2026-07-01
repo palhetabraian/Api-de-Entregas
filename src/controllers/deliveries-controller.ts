@@ -3,6 +3,7 @@ import { prisma } from '@/database/prisma';
 import { z } from 'zod';
 
 class DeliveriesController {
+  //criando entrega
   async create(request: Request, response: Response) {
     //validando conteudo da rota
     const bodySchema = z.object({
@@ -21,6 +22,14 @@ class DeliveriesController {
     });
 
     return response.status(201).json();
+  }
+
+  //criando funcao para listar as entregas
+  async index(request: Request, response: Response) {
+    //recuperando os pedidos
+    const deliveries = await prisma.delivery.findMany({}); // recuperando com findMany TODOS OS PEDIDOS DO BANCO
+
+    return response.json(deliveries);
   }
 }
 
