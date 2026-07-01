@@ -55,6 +55,10 @@ class DeliveryLogsController {
     //recuperando a entrega no banco de dados
     const delivery = await prisma.delivery.findUnique({
       where: { id: delivery_id },
+      include: {
+        logs: true, // inclui os logs relacionados ao delivery_id
+        user: true, // retorna todos os dados do usuario
+      },
     });
 
     //fazendo que o cliente consiga ver somente o pedido dele
