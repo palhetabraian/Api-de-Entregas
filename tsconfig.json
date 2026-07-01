@@ -1,5 +1,3 @@
-// definindo configuracoes
-
 {
   "compilerOptions": {
     "target": "es2022",
@@ -15,6 +13,8 @@
 
     "strict": true,
 
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    "types": ["node", "jest"]
   }
 }
