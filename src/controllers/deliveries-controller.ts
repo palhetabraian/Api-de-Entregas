@@ -27,7 +27,11 @@ class DeliveriesController {
   //criando funcao para listar as entregas
   async index(request: Request, response: Response) {
     //recuperando os pedidos
-    const deliveries = await prisma.delivery.findMany({}); // recuperando com findMany TODOS OS PEDIDOS DO BANCO
+    const deliveries = await prisma.delivery.findMany({
+      include: {
+        user: { select: { name: true, email: true } }, // retornando nome e usuario com includes
+      },
+    }); // recuperando com findMany TODOS OS PEDIDOS DO BANCO
 
     return response.json(deliveries);
   }
